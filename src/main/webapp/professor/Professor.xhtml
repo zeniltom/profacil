@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" template="/professor/Layout.xhtml">
+
+	<ui:define name="titulo">#{professorBean.editando ? 'Professor' : 'Novo Professor'}</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<o:viewParam name="professor" value="#{professorBean.professor}" />
+			<f:event listener="#{professorBean.inicializar}" type="preRenderView"></f:event>
+		</f:metadata>
+
+		<h:form id="frmCadastro">
+
+			<h1 class="aw-page-title">Informações Pessoais</h1>
+
+			<style >
+				.ui-growl {
+					top: auto;
+					bottom: 0px;
+				}
+			</style>
+
+			<p:autoUpdate />
+			<p:growl closable="true" />
+
+			<h:panelGrid columns="2">
+
+				<p:fieldset>
+
+					<p:panelGrid columns="2" id="painel1" columnClasses="rotulo"
+						styleClass="sem-borda" style="width: 100%; margin-top: 5px">
+
+						<p:outputLabel value="Nome" />
+						<p:inputText id="nome" size="50" maxlength="80"
+							value="#{professorBean.professor.nome}" />
+
+						<p:outputLabel value="Sobrenome" />
+						<p:inputText id="sobrenome" size="50" maxlength="80"
+							value="#{professorBean.professor.sobrenome}" />
+
+						<p:outputLabel value="CPF" for="cpf" />
+						<p:inputMask id="cpf" size="25" maxlength="20"
+							mask="999.999.999-99" value="#{professorBean.professor.cpf}" />
+
+						<p:outputLabel value="Telefone" for="telefone" />
+						<p:inputMask id="telefone" mask="(99) 99999-9999" size="15"
+							maxlength="20" value="#{professorBean.professor.telefone}" />
+					</p:panelGrid>
+
+				</p:fieldset>
+
+				<p:fieldset>
+
+					<p:panelGrid columns="2" id="painel2" columnClasses="rotulo"
+						styleClass="sem-borda" style="width: 100%; margin-top: 5px">
+
+						<p:outputLabel value="Endereço" for="endereco" />
+						<p:inputText id="endereco" size="50" maxlength="80"
+							value="#{professorBean.professor.endereco}" />
+
+						<p:outputLabel value="Complemento" for="complemento" />
+						<p:inputText id="complemento" size="50" maxlength="80"
+							value="#{professorBean.professor.complemento}" />
+
+						<p:outputLabel value="Número" for="numero" />
+						<p:inputText id="numero" size="50" maxlength="80"
+							value="#{professorBean.professor.numero}" />
+
+						<p:outputLabel value="Município" for="municicio" />
+						<p:inputText id="municicio" size="50" maxlength="80" />
+					</p:panelGrid>
+
+				</p:fieldset>
+
+				<p:fieldset>
+
+					<p:panelGrid columns="2" id="painel3" columnClasses="rotulo"
+						styleClass="sem-borda" style="width: 100%; margin-top: 5px">
+
+						<p:outputLabel value="E-mail" for="email" />
+						<p:inputText id="email" size="50" maxlength="80"
+							styleClass="sem-borda" value="#{professorBean.professor.email}" />
+
+						<p:outputLabel value="Senha" for="senha" />
+						<p:password id="senha" size="50" maxlength="80"
+							value="#{professorBean.professor.senha}" match="confirmacaoSenha"
+							validatorMessage="Senhas não conferem" />
+
+						<p:outputLabel value="Confirme a senha" for="confirmacaoSenha" />
+						<p:password id="confirmacaoSenha" size="50" maxlength="80"
+							value="#{professorBean.professor.senha}" required="true" />
+					</p:panelGrid>
+
+				</p:fieldset>
+			</h:panelGrid>
+
+			<p:toolbar style="margin-top: 10px;">
+				<p:toolbarGroup align="left">
+					<p:commandButton id="botaoSalvar" value="Salvar Alterações"
+						update="foto :frmCadastro" action="#{professorBean.salvar}"
+						ajax="false" icon="fa fa-save" styleClass="btConfirmar" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<h:form>
+						<p:themeSwitcher id="tema"
+							value="#{professorBean.preferencia.tema}">
+							<f:selectItems value="#{temasBean.temas}" />
+						</p:themeSwitcher>
+
+						<p:tooltip for="tema" rendered="true" position="top">
+
+							<p:panelGrid columns="2">
+								<f:facet name="header">
+									<h:graphicImage library="images" name="logo.png" />
+								</f:facet>
+
+								<f:facet name="footer">
+									<h:outputLabel value="Tema da aplicação" />
+								</f:facet>
+							</p:panelGrid>
+						</p:tooltip>
+					</h:form>
+				</p:toolbarGroup>
+			</p:toolbar>
+		</h:form>
+	</ui:define>
+</ui:composition>

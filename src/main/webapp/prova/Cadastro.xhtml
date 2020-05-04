@@ -1,0 +1,161 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" template="/prova/Layout.xhtml">
+
+	<ui:define name="titulo">#{provaCadastroBean.editando ? 'Edição de Prova' : 'Novo Prova'}</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<o:viewParam name="prova" value="#{provaCadastroBean.prova}" />
+			<f:event listener="#{provaCadastroBean.inicializar}"
+				type="preRenderView"></f:event>
+		</f:metadata>
+
+		<h:form id="frmCadastro">
+			<h1 class="aw-page-title">#{provaCadastroBean.editando ? 'Edição
+				de Prova' : 'Nova Prova'}</h1>
+
+			<p:growl id="msg" closable="true" />
+
+			<p:toolbar style="margin-top: 20px;">
+				<p:toolbarGroup>
+					<p:button value="Nova Prova" icon="fa fa-plus"
+						outcome="/prova/Cadastro" />
+
+					<p:commandButton id="botaoSalvar" styleClass="btConfirmar"
+						action="#{provaCadastroBean.salvar}" value="Salvar" ajax="false"
+						icon="fa fa-save" />
+
+					<p:commandButton value="Excluir" icon="fa fa-trash"
+						styleClass="btCancelar" rendered="#{provaCadastroBean.editando}"
+						oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+						update="frmCadastro:confirmacaoExclusaoDialog" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Gerar Prova" styleClass="btConfirmar"
+						icon="fa fa-print" action="#{provaCadastroBean.gerarProva}"
+						ajax="false" process="@this" />
+
+					<p:button value="Listar Provas" icon="fa fa-search"
+						outcome="/prova/Pesquisa" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="4" id="painel"
+				style="width: 100%; margin-top: 20px" columnClasses="rotulo, campo">
+
+				<p:outputLabel value="Descrição" for="descricao" />
+				<p:inputText id="descricao"
+					value="#{provaCadastroBean.prova.descricao}" style="width: 90%;"
+					maxlength="150" />
+
+				<p:outputLabel value="Nº Questões" for="nQuestoes" />
+				<p:inputNumber id="nQuestoes" maxValue="100" minValue="1"  
+					decimalPlaces="0" value="#{provaCadastroBean.prova.nQuestoes}"
+					size="10" maxlength="2" />
+
+				<p:outputLabel value="Data da Prova" for="dataProva" />
+				<p:calendar id="dataProva" pattern="dd/MM/yyyy"
+					value="#{provaCadastroBean.prova.dataProva}" size="10"
+					maxlength="80" />
+
+				<p:outputLabel value="Valor" for="valor" />
+				<p:inputNumber id="valor" minValue="0" maxValue="10.0" size="10"
+					decimalPlaces="2" value="#{provaCadastroBean.prova.valor}" />
+
+				<p:outputLabel value="Turma" for="turma" />
+				<p:inputText id="turma" value="#{provaCadastroBean.prova.turma}"
+					size="10" maxlength="10" />
+
+				<p:outputLabel value="Turno" for="turno" />
+				<p:selectOneMenu id="turno" value="#{provaCadastroBean.prova.turno}">
+					<f:selectItem itemLabel="Selecione um turno" />
+					<f:selectItems value="#{provaCadastroBean.turnos}" var="turno"
+						itemValue="#{turno}" itemLabel="#{turno.descricao}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Curso" for="curso" />
+				<p:selectOneMenu id="curso"
+					value="#{provaCadastroBean.prova.disciplina.curso}">
+					<f:selectItem itemLabel="Selecione um curso" />
+					<f:selectItems value="#{provaCadastroBean.cursos}" var="curso"
+						itemValue="#{curso}" itemLabel="#{curso.descricao}" />
+					<p:ajax listener="#{provaCadastroBean.carregarDisciplinas}"
+						update="disciplina" />
+					<p:ajax />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Disciplina" for="disciplina" />
+				<p:selectOneMenu id="disciplina"
+					value="#{provaCadastroBean.prova.disciplina}">
+					<f:selectItem itemLabel="Selecione uma disciplina" />
+					<f:selectItems value="#{provaCadastroBean.disciplinas}"
+						var="disciplina" itemValue="#{disciplina}"
+						itemLabel="#{disciplina.descricao}" />
+				</p:selectOneMenu>
+
+			</p:panelGrid>
+
+			<p:tabView id="tab" style="margin-top: 20px"
+				rendered="#{provaCadastroBean.editando}">
+
+				<p:tab title="Questões da Prova">
+
+					<p:dataTable id="questoesTable" var="questao"
+						value="#{provaCadastroBean.questoes}"
+						selection="#{provaCadastroBean.questoesSelecionadas}"
+						emptyMessage="Não há questões" rows="8" paginator="true"
+						rowKey="#{questao.id}" paginatorAlwaysVisible="false"
+						paginatorPosition="bottom">
+
+						<p:ajax event="rowToggle"
+							listener="#{provaCadastroBean.carregarRespostas(questao)}"
+							update="frmRespostas:respostasTable" />
+
+						<p:column exportable="false" style="width: 16px;">
+							<p:rowToggler />
+						</p:column>
+
+						<p:column selectionMode="multiple"
+							style="width: 32px; text-align: center" />
+
+						<p:column headerText="Descrição da Questão"
+							sortBy="#{questao.descricao}">
+							<h:outputText value="#{questao.descricao}" />
+						</p:column>
+
+						<p:rowExpansion rendered="#{provaCadastroBean.possueRespostas}">
+
+							<ui:include src="/prova/Respostas.xhtml" />
+
+						</p:rowExpansion>
+
+					</p:dataTable>
+				</p:tab>
+			</p:tabView>
+
+			<p:confirmDialog header="Exclusão de Prova"
+				id="confirmacaoExclusaoDialog"
+				message="Tem certeza que deseja excluir a prova #{provaCadastroBean.prova.descricao}?"
+				widgetVar="confirmacaoExclusao">
+
+				<div style="float: right;">
+					<p:button value="Não" icon="fa fa-times-circle"
+						styleClass="btCancelar"
+						onclick="PF('confirmacaoExclusao').hide(); return false;" />
+
+					<p:commandButton value="Sim" icon="fa fa-check-square"
+						oncomplete="PF('confirmacaoExclusao').hide();"
+						styleClass="btConfirmar" action="#{provaCadastroBean.excluir}"
+						process="@this" />
+				</div>
+			</p:confirmDialog>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

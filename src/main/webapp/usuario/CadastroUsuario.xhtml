@@ -1,0 +1,159 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" template="/usuario/Layout.xhtml">
+
+	<ui:define name="titulo">#{professorCadastroBean.editando ? 'Edição de Usuário' : 'Novo Usuário'}</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<o:viewParam name="professor"
+				value="#{professorCadastroBean.professor}" />
+			<f:event listener="#{professorCadastroBean.inicializar}"
+				type="preRenderView"></f:event>
+		</f:metadata>
+
+		<h:form id="frmCadastro">
+			<h1 class="aw-page-title">#{professorCadastroBean.editando ?
+				'Edição de Usuário' : 'Novo Usuário'}</h1>
+
+			<p:autoUpdate />
+			<p:messages closable="true" />
+
+			<p:toolbar style="margin-top: 20px;">
+				<p:toolbarGroup>
+
+					<p:button value="Novo" outcome="/usuario/CadastroUsuario"
+						icon="fa fa-plus" />
+
+					<p:commandButton id="botaoSalvar" value="Salvar"
+						action="#{professorCadastroBean.salvar}" ajax="false"
+						icon="fa fa-save" styleClass="btConfirmar" />
+
+					<p:commandButton value="Excluir" icon="fa fa-trash"
+						styleClass="btCancelar"
+						rendered="#{professorCadastroBean.editando}"
+						oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+						update="frmCadastro:confirmacaoExclusaoDialog" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:button value="Listar Usuários"
+						outcome="/usuario/PesquisaUsuarios" icon="fa fa-search" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="2" id="painel"
+				style="width:100%; margin-top:20px" columnClasses="rotulo, campo">
+
+				<p:outputLabel value="Nome" for="nome" />
+				<p:inputText id="nome" size="60" maxlength="80"
+					value="#{professorCadastroBean.professor.nome}" />
+
+				<p:outputLabel value="E-mail" for="email" />
+				<p:inputText id="email" size="60" maxlength="80"
+					value="#{professorCadastroBean.professor.email}"
+					validatorMessage="Insira um e-mail válido">
+
+					<f:validateRegex
+						pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+
+				</p:inputText>
+
+				<p:outputLabel value="Senha" for="senha1" />
+				<p:password id="senha1" size="60" maxlength="80" feedback="true"
+					goodLabel="Muito boa" weakLabel="Muito fácil" inline="true"
+					strongLabel="Muito forte" promptLabel="Insira sua senha"
+					value="#{professorCadastroBean.professor.senha}" match="senha2"
+					validatorMessage="As senhas são diferentes" />
+
+				<p:outputLabel value="Confirmar senha" for="senha2" />
+				<p:password id="senha2" size="60" maxlength="80"
+					value="#{professorCadastroBean.professor.senha}" />
+			</p:panelGrid>
+
+			<ui:include src="/WEB-INF/template/usuario/PermissoesUsuario.xhtml" />
+
+			<p:confirmDialog header="Exclusão de Usuário"
+				id="confirmacaoExclusaoDialog"
+				message="Tem certeza que deseja excluir o usuário #{professorCadastroBean.professor.nome}?"
+				widgetVar="confirmacaoExclusao">
+
+				<div style="float: right;">
+					<p:button value="Não" icon="fa fa-times-circle"
+						styleClass="btCancelar"
+						onclick="PF('confirmacaoExclusao').hide(); return false;" />
+
+					<p:commandButton value="Sim" icon="fa fa-check-square"
+						styleClass="btConfirmar"
+						oncomplete="PF('confirmacaoExclusao').hide();"
+						action="#{professorCadastroBean.excluir}" process="@this" />
+				</div>
+			</p:confirmDialog>
+
+		</h:form>
+
+		<p:confirmDialog header="Adição de Permissão"
+			id="confirmacaoAdicaoDialog" message="Selecione a permissão:"
+			widgetVar="confirmacaoAdicao">
+
+			<h:form id="frmDialogAdicaoPermissao">
+				<h:panelGrid id="painel" columns="2">
+
+					<p:selectOneMenu id="grupo" required="true"
+						requiredMessage="Escolha uma permissão"
+						value="#{professorCadastroBean.professorGrupo.grupo}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem itemLabel="Selecione" />
+						<f:selectItems value="#{professorCadastroBean.listaGrupos}"
+							var="grupo" itemLabel="#{grupo}" itemValue="#{grupo}" />
+
+						<p:ajax update="@this" event="change" />
+
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+				<p:button value="Não" icon="fa fa-times-circle"
+					styleClass="btCancelar"
+					onclick="PF('confirmacaoAdicao').hide(); return false;" />
+
+				<p:commandButton value="Sim" icon="fa fa-check-square"
+					oncomplete="PF('confirmacaoAdicao').hide();"
+					styleClass="btConfirmar"
+					update=":frmCadastro:tab:permissaoTable :frmDialogAdicaoPermissao"
+					action="#{professorCadastroBean.adicionarPermissao}"
+					process="@this">
+
+				</p:commandButton>
+			</h:form>
+		</p:confirmDialog>
+
+		<p:confirmDialog header="Exclusão de Permissão"
+			id="confirmacaoExclusaoDialog"
+			message="Tem certeza que deseja excluir a permissão de #{professorCadastroBean.grupoSelecionado.nome.toUpperCase()} 
+			para o usuário #{professorCadastroBean.professor.nome}?"
+			widgetVar="confirmacaoExclusao">
+
+			<h:form id="frmDialogExclusaoPermissao">
+
+				<h:panelGrid cellspacing="2" columns="2" style="margin: auto;">
+
+					<p:button value="Não" icon="fa fa-times-circle"
+						styleClass="btCancelar"
+						onclick="PF('confirmacaoExclusao').hide(); return false;" />
+
+					<p:commandButton value="Sim" icon="fa fa-check-square"
+						update=":frmCadastro:tab:permissaoTable" styleClass="btConfirmar"
+						oncomplete="PF('confirmacaoExclusao').hide();"
+						action="#{professorCadastroBean.excluirPermissao}" process="@this">
+					</p:commandButton>
+				</h:panelGrid>
+			</h:form>
+		</p:confirmDialog>
+
+	</ui:define>
+</ui:composition>

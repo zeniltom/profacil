@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" template="/curso/Layout.xhtml">
+
+	<ui:define name="titulo">#{cursoCadastroBean.editando ? 'Edição de Curso' : 'Novo Curso'}</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<o:viewParam name="curso" value="#{cursoCadastroBean.curso}" />
+			<f:event listener="#{cursoCadastroBean.inicializar}"
+				type="preRenderView"></f:event>
+		</f:metadata>
+
+		<h:form id="frmCadastro">
+			<h1 class="aw-page-title">#{cursoCadastroBean.editando ? 'Edição
+				de Curso' : 'Novo Curso'}</h1>
+
+			<p:autoUpdate />
+			<p:messages closable="true" />
+
+			<p:toolbar style="margin-top: 20px;">
+				<p:toolbarGroup>
+					<p:button value="Novo Curso" icon="fa fa-plus"
+						outcome="/curso/Cadastro" />
+
+					<p:commandButton id="botaoSalvar"
+						action="#{cursoCadastroBean.salvar}" styleClass="btConfirmar"
+						value="Salvar" ajax="false" icon="fa fa-save" />
+
+					<p:commandButton value="Excluir" icon="fa fa-trash"
+						styleClass="btCancelar" rendered="#{cursoCadastroBean.editando}"
+						oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+						update="frmCadastro:confirmacaoExclusaoDialog" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:button value="Listar Cursos" icon="fa fa-search"
+						outcome="/curso/Pesquisa" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="2" id="painel"
+				style="width:100%; margin-top:20px" columnClasses="rotulo, campo">
+
+				<p:outputLabel value="Descrição do curso" for="descricao" />
+				<p:inputText id="descricao"
+					value="#{cursoCadastroBean.curso.descricao}" size="60"
+					maxlength="80" />
+			</p:panelGrid>
+			
+			<p:confirmDialog header="Exclusão de Curso"
+				id="confirmacaoExclusaoDialog"
+				message="Tem certeza que deseja excluir o curso #{cursoCadastroBean.curso.descricao}?"
+				widgetVar="confirmacaoExclusao">
+
+				<div style="float: right;">
+					<p:button value="Não" icon="fa fa-times-circle"
+						styleClass="btCancelar"
+						onclick="PF('confirmacaoExclusao').hide(); return false;" />
+
+					<p:commandButton value="Sim" icon="fa fa-check-square"
+						oncomplete="PF('confirmacaoExclusao').hide();"
+						styleClass="btConfirmar"
+						action="#{cursoCadastroBean.excluir}" process="@this" />
+				</div>
+			</p:confirmDialog>
+			
+		</h:form>
+	</ui:define>
+</ui:composition>

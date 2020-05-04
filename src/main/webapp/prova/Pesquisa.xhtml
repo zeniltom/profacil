@@ -1,0 +1,105 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core" template="/prova/Layout.xhtml">
+
+	<f:metadata>
+		<f:event listener="#{provasPesquisaBean.pesquisar}"
+			type="preRenderView" />
+	</f:metadata>
+
+	<ui:define name="titulo">Minhas Provas</ui:define>
+
+	<ui:define name="corpo">
+		<h:form id="frmPesquisa">
+
+			<h1 class="aw-page-title">Minhas Provas</h1>
+
+			<p:autoUpdate />
+			<p:messages closable="true" />
+
+			<p:toolbar style="margin-top: 20px;">
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar" icon="fa fa-search"
+						action="#{provasPesquisaBean.pesquisar}" update="form:provasTable" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup style="margin-left: 10px;">
+					<p:inputText id="descricao" size="60" placeholder="Ex.: Sociologia"
+						value="#{provasPesquisaBean.descricao}" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:button value="Nova Prova" icon="fa fa-plus"
+						outcome="/prova/Cadastro" />
+				</p:toolbarGroup>
+			</p:toolbar>
+		</h:form>
+
+		<h:form id="form">
+			<p:dataTable id="provasTable"
+				value="#{provasPesquisaBean.provasFiltradas}" var="prova"
+				style="margin-top:20px;" emptyMessage="Nenhuma prova encontrada"
+				rows="8" paginator="true" paginatorAlwaysVisible="false"
+				paginatorPosition="bottom" rowKey="#{prova}" selectionMode="single">
+
+				<p:ajax event="rowDblselect"
+					listener="#{provasPesquisaBean.doubleClick}" process="@this">
+					<f:param name="Prova" value="#{prova.id}" />
+				</p:ajax>
+
+				<p:column headerText="Descrição" style="text-align: center"
+					sortBy="#{prova.descricao}">
+					<h:outputText value="#{prova.descricao}" />
+				</p:column>
+
+				<p:column headerText="Curso" style="text-align: center"
+					sortBy="#{prova.disciplina.curso.descricao}">
+					<h:outputText
+						value="#{prova.disciplina.curso.descricao}" />
+				</p:column>
+
+				<p:column headerText="Disciplina" style="text-align: center"
+					sortBy="#{prova.disciplina.descricao}">
+					<h:outputText value="#{prova.disciplina.descricao}" />
+				</p:column>
+
+				<p:column style="text-align: center; width: 200px"
+					headerText="Ações">
+
+					<p:button outcome="/prova/Cadastro" value="Editar"
+						icon="fa fa-pencil-square-o">
+						<f:param name="prova" value="#{prova.id}" />
+					</p:button>
+
+					<p:commandButton value="Excluir" icon="fa fa-trash"
+						styleClass="btCancelar"
+						oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+						update=":form:confirmacaoExclusaoDialog">
+						<f:setPropertyActionListener value="#{prova}"
+							target="#{provasPesquisaBean.provaSelecionada}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+			<p:confirmDialog header="Exclusão de Prova"
+				id="confirmacaoExclusaoDialog"
+				message="Tem certeza que deseja excluir a prova #{provasPesquisaBean.provaSelecionada}?"
+				widgetVar="confirmacaoExclusao">
+
+				<div style="float: right;">
+					<p:button value="Não" icon="fa fa-times-circle"
+						styleClass="btCancelar"
+						onclick="PF('confirmacaoExclusao').hide(); return false;" />
+
+					<p:commandButton value="Sim" icon="fa fa-check-square"
+						oncomplete="PF('confirmacaoExclusao').hide();"
+						styleClass="btConfirmar" action="#{provasPesquisaBean.excluir}"
+						process="@this" update=":form:provasTable" />
+				</div>
+			</p:confirmDialog>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

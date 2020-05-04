@@ -1,0 +1,81 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<p:tabView style="margin-top: 10px" id="tab">
+		<p:tab title="Questões">
+			<p:toolbar>
+				<p:toolbarGroup align="right">
+					<p:button value="Adicionar Questão" icon="fa fa-plus"
+						outcome="/questao/Cadastro" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:dataTable id="questoesTable"
+				value="#{disciplinaCadastroBean.questoes}" var="questao"
+				emptyMessage="Não há questões" rows="8" paginator="true"
+				rowKey="#{questao}" paginatorAlwaysVisible="false"
+				paginatorPosition="bottom" selectionMode="single">
+
+				<p:ajax event="rowDblselect"
+					listener="#{disciplinaCadastroBean.doubleClickQuestao}"
+					process="@this">
+					<f:param name="questao" value="#{questao.id}" />
+				</p:ajax>
+
+				<p:column headerText="Descrição Questão"
+					sortBy="#{questao.descricao}">
+					<h:outputText value="#{questao.descricao}" />
+				</p:column>
+
+				<p:column headerText="Tipo"
+					sortBy="#{questao.tipoQuestao.descricao}"
+					style="width: 160px; text-align: center;">
+					<h:outputText value="#{questao.tipoQuestao.descricao}" />
+				</p:column>
+
+				<p:column headerText="Pontuação" sortBy="#{questao.pontuacao}"
+					style="width: 100px; text-align: right;">
+					<h:outputText value="#{questao.pontuacao}" />
+				</p:column>
+
+				<p:column headerText="Ações"
+					style="text-align: center; width: 200px">
+
+					<p:button value="Editar" icon="fa fa-pencil-square-o"
+						outcome="/questao/Cadastro">
+						<f:param name="questao" value="#{questao.id}" />
+					</p:button>
+
+					<p:commandButton value="Excluir" icon="fa fa-trash"
+						styleClass="btCancelar"
+						oncomplete="PF('confirmacaoExclusaoQuestao').show()"
+						process="@this" update="confirmacaoExclusaoDialog">
+						<f:setPropertyActionListener value="#{questao}"
+							target="#{disciplinaCadastroBean.questao}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:tab>
+	</p:tabView>
+
+	<p:confirmDialog header="Exclusão de Questão"
+		id="confirmacaoExclusaoDialog"
+		message="Tem certeza que deseja excluir a Questão '#{disciplinaCadastroBean.questao.descricao}'?"
+		widgetVar="confirmacaoExclusaoQuestao">
+
+		<div style="float: right;">
+			<p:button value="Não" icon="fa fa-times-circle"
+				styleClass="btCancelar"
+				onclick="PF('confirmacaoExclusaoQuestao').hide(); return false;" />
+
+			<p:commandButton value="Sim" icon="fa fa-check-square"
+				oncomplete="PF('confirmacaoExclusaoQuestao').hide();"
+				styleClass="btConfirmar"
+				action="#{disciplinaCadastroBean.excluirQuestao}" process="@this"
+				update="tab:questoesTable" />
+		</div>
+	</p:confirmDialog>
+</ui:composition>

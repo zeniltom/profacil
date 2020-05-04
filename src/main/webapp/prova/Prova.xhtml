@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core" template="/prova/Layout.xhtml">
+
+	<f:metadata>
+		<f:event listener="#{menuManagedBean.inicializar}"
+			type="preRenderView" />
+	</f:metadata>
+	
+	<ui:define name="titulo">Prova</ui:define>
+
+	<ui:define name="corpo">
+
+		<h1 class="aw-page-title">Suas provas #{seguranca.nomeProfessor}!</h1>
+
+		<h:form>
+			<p:menubar styleClass="menu-sistema"
+				style="background-color: #545454 !important;"
+				model="#{menuManagedBean.menubar}" />
+
+			<p style="margin: 400px" />
+		</h:form>
+
+	</ui:define>
+</ui:composition>

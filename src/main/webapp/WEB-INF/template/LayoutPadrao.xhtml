@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+
+	<f:facet name="first">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+	</f:facet>
+	<title><ui:insert name="titulo">Gerador de Provas Institucionais</ui:insert>
+	</title>
+
+	<h:outputStylesheet library="css" name="sistema.css" />
+	<h:outputStylesheet library="css" name="componentes.css" />
+	<h:outputStylesheet library="css" name="template.css" />
+
+	<h:outputScript target="body" library="js" name="app.js" />
+	<h:outputScript library="js" name="jquery.maskMoney.js" />
+
+	<h:outputStylesheet
+		name="webjars/font-awesome/4.4.0/css/font-awesome.css" />
+
+</h:head>
+
+<h:body>
+
+	<p:ajaxStatus styleClass="ajax-status" onsuccess="configurarMoeda()">
+		<f:facet name="start">
+			<h:graphicImage library="images" name="loading.gif" />
+		</f:facet>
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<header class="aw-topbar">
+
+		<a href="#" class="aw-toggle  js-toggle"><i class="fa  fa-bars"></i></a>
+
+		<h:graphicImage library="images" width="130" height="25"
+			name="logo.png" />
+
+		<a id="sair" href="${request.contextPath}/logout"><i
+			class="fa fa-power-off" style="font-size: 16px;"><p:outputLabel
+					style="padding: 10px; font-weight: bold; font-size: 16px;"
+					value="Sair" /></i></a>
+
+		<h:link id="infoProfessor" value="Professor (a) "
+			style="float: right; color: white; font-weight: bold; font-size: 16px; margin: 8px;
+			 line-height: 30px; text-decoration:none; "
+			outcome="/professor/Professor.xhtml?professor=#{seguranca.professorLogado.professor.id}">
+
+			<h:outputLabel value="#{seguranca.nomeProfessor}"
+				style="text-transform: uppercase" />
+
+			<h:graphicImage
+				style="float: left; padding: 5px; width: 20px; height: 20px;"
+				id="foto" cache="false" height="50" width="50" library="images"
+				name="user.png" />
+
+		</h:link>
+
+		<ui:insert name="toolbar">
+
+			<div style="float: right; margin-right: 10px;">
+
+
+				<!-- 
+				<h:form style="display: inline-block">
+					<p:menubar styleClass="menu-sistema">
+						<p:submenu label="Cursos">
+							<p:menuitem value="Novo curso" outcome="/curso/Cadastro"
+								icon="fa fa-plus" />
+							<p:menuitem value="Pesquisa" icon="fa fa-search"
+								outcome="/curso/Pesquisa" />
+						</p:submenu>
+
+						<p:submenu label="Disciplinas">
+							<p:menuitem value="Nova disciplina" icon="fa fa-plus"
+								outcome="/disciplina/Cadastro" />
+							<p:menuitem value="Pesquisa" icon="fa fa-search"
+								outcome="/disciplina/Pesquisa" />
+						</p:submenu>
+
+						<p:submenu label="Assuntos">
+							<p:menuitem value="Novo assunto" icon="fa fa-plus" />
+							<p:menuitem value="Pesquisa" icon="fa fa-search" />
+						</p:submenu>
+
+						<p:submenu label="Questões">
+							<p:menuitem value="Nova questão" icon="fa fa-plus" />
+							<p:menuitem value="Pesquisa" icon="fa fa-search" />
+						</p:submenu>
+
+						<p:submenu label="Relatórios">
+							<p:menuitem value="Pedidos emitidos" icon="fa fa-area-chart"
+								outcome="/relatorios/RelatorioPedidosEmitidos" />
+						</p:submenu>
+
+						<p:menuitem value="Sair" icon="fa fa-power-off"
+							url="/j_spring_security_logout"
+							style="color: white; width: 60px; border: 0.1px solid gray; border-radius: 5px; margin-left: 25px;  padding-right: 10px; padding: 5px; font-weight: bold;"
+							styleClass="btSair" />
+					</p:menubar>
+				</h:form>-->
+			</div>
+		</ui:insert>
+	</header>
+
+	<aside class="aw-sidebar  js-sidebar">
+		<nav class="aw-menu">
+			<ul>
+				<li><h:link
+						outcome="/professor/Professor.xhtml?professor=#{seguranca.professorLogado.professor.id}">
+						<i class="fa fa-user"></i>Meu Perfil</h:link></li>
+
+				<li><h:link
+						rendered="#{seguranca.componenteProfessorPermitido}"
+						outcome="/usuario/PesquisaUsuarios.xhtml">
+						<i class="fa fa-group"></i>Usuários</h:link></li>
+
+				<li><h:link outcome="/curso/Pesquisa.xhtml">
+						<i class="fa fa-mortar-board"></i>Cursos</h:link></li>
+
+				<li><h:link outcome="/disciplina/Pesquisa">
+						<i class="fa fa-book"></i>Disciplinas</h:link></li>
+
+				<li><h:link outcome="/prova/Pesquisa">
+						<i class="fa fa-file-text"></i>Minhas Provas</h:link></li>
+
+				<li><h:link outcome="/Home">
+						<i class="fa fa-info-circle"></i>Sobre</h:link></li>
+			</ul>
+		</nav>
+
+		<h:graphicImage library="images" name="logo_final.png" height="130"
+			width="150" style="margin-top: 20%; margin-left: 8%;" />
+
+		<h:graphicImage library="images" name="fasete.png" height="120"
+			width="130" style="margin-top: 20%; margin-left: 12%;" />
+	</aside>
+
+	<section class="aw-content  js-content">
+		<div id="conteudo">
+			<ui:insert name="corpo" />
+		</div>
+	</section>
+	<script>
+		function configurarMoeda() {
+			$(".moeda").maskMoney({
+				decimal : ",",
+				thousands : ".",
+				allowZero : true
+			});
+		}
+		$(document).ready(function() {
+			configurarMoeda();
+		});
+	</script>
+</h:body>
+</html>

@@ -1,0 +1,111 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core" template="/usuario/Layout.xhtml">
+
+	<ui:define name="titulo">Lista de Usuários</ui:define>
+
+	<h:outputStylesheet library="css" name="sistema.css" />
+
+	<f:metadata>
+		<f:event listener="#{professorPesquisaBean.pesquisar}"
+			type="preRenderView" />
+	</f:metadata>
+
+	<ui:define name="corpo">
+		<h:form id="frmPesquisa">
+			<h1 class="aw-page-title">Lista de Usuários</h1>
+
+			<p:autoUpdate />
+			<p:messages closable="true" />
+
+			<p:toolbar style="margin-top: 20px;">
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar" icon="fa fa-search"
+						action="#{professorPesquisaBean.pesquisar}" update="@form" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup style="margin-left: 10px">
+					<p:inputText id="nome" size="60" placeholder="Ex.: Gilberto"
+						value="#{professorPesquisaBean.professor.nome}" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:button value="Novo Usuário" icon="fa fa-plus"
+						outcome="/usuario/CadastroUsuario" />
+				</p:toolbarGroup>
+			</p:toolbar>
+		</h:form>
+
+		<h:form id="form">
+			<p:dataTable id="professoresTable"
+				value="#{professorPesquisaBean.professorsFiltrados}"
+				var="professor" style="margin-top:20px;"
+				emptyMessage="Nenhum usuário encontrado" rows="8" paginator="true"
+				paginatorAlwaysVisible="false" paginatorPosition="bottom"
+				rowKey="#{professor}" selectionMode="single">
+
+				<p:ajax event="rowDblselect"
+					listener="#{professorPesquisaBean.doubleClick}" process="@this">
+					<f:param name="professor" value="#{professor.id}" />
+				</p:ajax>
+
+				<p:column headerText="Nome" style="text-align: center;"
+					sortBy="#{professor.nome}">
+					<h:outputText value="#{professor.nome}" />
+				</p:column>
+
+				<p:column headerText="E-mail" style="text-align: center;"
+					sortBy="#{professor.email}">
+					<h:outputText value="#{professor.email}" />
+				</p:column>
+
+				<p:column headerText="Login" style="text-align: center;"
+					sortBy="#{professor.login}">
+					<h:outputText value="#{professor.login}" />
+				</p:column>
+
+				<p:column headerText="Permissão" style="text-align: center">
+					<h:outputText
+						value="#{professor.grupos == '[]' ? 'SEM PERMISSÃO' : professor.grupos.toString().replace('[', '').replace(']', '')}" />
+				</p:column>
+
+				<p:column style="text-align: center; width: 200px"
+					headerText="Ações">
+					<p:button outcome="/usuario/CadastroUsuario" value="Editar"
+						icon="fa fa-pencil-square-o">
+						<f:param name="professor" value="#{professor.id}" />
+					</p:button>
+
+					<p:commandButton value="Excluir" icon="fa fa-trash"
+						styleClass="btCancelar"
+						oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+						update=":form:confirmacaoExclusaoDialog">
+						<f:setPropertyActionListener value="#{professor}"
+							target="#{professorPesquisaBean.professorSelecionado}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+			<p:confirmDialog header="Exclusão de Professor"
+				id="confirmacaoExclusaoDialog"
+				message="Tem certeza que deseja excluir o usuário #{professorPesquisaBean.professorSelecionado}?"
+				widgetVar="confirmacaoExclusao">
+
+				<div style="float: right;">
+					<p:button value="Não" icon="fa fa-times-circle"
+						styleClass="btCancelar"
+						onclick="PF('confirmacaoExclusao').hide(); return false;" />
+
+					<p:commandButton value="Sim" icon="fa fa-check-square"
+						oncomplete="PF('confirmacaoExclusao').hide();"
+						styleClass="btConfirmar"
+						action="#{professorPesquisaBean.excluir}" process="@this"
+						update=":form:professoresTable" />
+				</div>
+			</p:confirmDialog>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

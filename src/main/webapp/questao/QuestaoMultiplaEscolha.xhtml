@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<p:outputLabel value="Descrição da pergunta: (Múltipla Escolha)"
+		style="font-size: 16px; font-weight: bold;" for="MUE" />
+	<p:textEditor widgetVar="MUE" id="MUE"
+		placeholder="Digite a descrição da sua pergunta aqui"
+		value="#{questaoCadastroBean.questao.descricao}" height="100"
+		style="margin-bottom: 10px; margin-top: 20px">
+		<f:facet name="toolbar">
+			<span class="ql-formats">
+				<button class="ql-bold"></button>
+				<button class="ql-italic"></button>
+				<button class="ql-underline"></button>
+				<button class="ql-strike"></button>
+			</span>
+			<span class="ql-formats"> <select class="ql-font"></select> <select
+				class="ql-size"></select>
+			</span>
+		</f:facet>
+	</p:textEditor>
+
+	<p:tabView id="tabMUE">
+		<p:tab title="Respostas">
+			<p:toolbar>
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Adicionar Resposta" icon="fa fa-plus"
+						oncomplete="PF('confirmacaoEdicaoMUE').show()" process="@this"
+						actionListener="#{questaoCadastroBean.novaResposta}"
+						update="frmCadastro:confirmacaoEdicaoMUEDialog">
+					</p:commandButton>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:dataTable id="respostasMUETable"
+				value="#{questaoCadastroBean.respostas}" var="resposta"
+				emptyMessage="Não há respostas" rows="8" paginator="true"
+				rowKey="#{resposta}" paginatorAlwaysVisible="false"
+				rowIndexVar="linha" paginatorPosition="bottom">
+
+				<p:column headerText="Descrição da Resposta" id="descricao">
+					<p:outputLabel value="#{resposta.descricao}" style="width:100%" />
+				</p:column>
+
+				<p:column headerText="Ações"
+					style="text-align: center; width: 200px">
+
+					<p:commandButton value="Editar" icon="fa fa-pencil-square-o"
+						update=":frmCadastro:confirmacaoEdicaoMUEDialog :frmCadastro:frmDialogEdicaoRespostaMUE:painel"
+						oncomplete="PF('confirmacaoEdicaoMUE').show()" process="@this">
+						<f:setPropertyActionListener value="#{resposta}"
+							target="#{questaoCadastroBean.resposta}" />
+					</p:commandButton>
+
+					<p:commandButton value="Excluir" icon="fa fa-trash"
+						styleClass="btCancelar"
+						update=":frmCadastro:frmDialogEdicaoRespostaMUE :frmCadastro:confirmacaoExclusaoDialogMUE"
+						oncomplete="PF('confirmacaoExclusaoMUE').show()" process="@this">
+						<f:setPropertyActionListener value="#{resposta}"
+							target="#{questaoCadastroBean.resposta}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:tab>
+	</p:tabView>
+
+	<p:dialog
+		header="#{questaoCadastroBean.editandoResposta? 'Edição de Resposta (Múltipla Escolha)' : 'Nova Resposta (Múltipla Escolha)'}"
+		id="confirmacaoEdicaoMUEDialog" widgetVar="confirmacaoEdicaoMUE"
+		modal="true" resizable="false" draggable="false"
+		onShow="PF('confirmacaoEdicaoMUE').initPosition()">
+
+		<h:form id="frmDialogEdicaoRespostaMUE">
+			<h:panelGrid id="painel" columns="1">
+
+				<p:outputLabel value="Descrição da Resposta" for="descricao"
+					style="font-size: 16px; font-weight: bold;" />
+				<p:textEditor id="descricao" style="width: 750px"
+					value="#{questaoCadastroBean.resposta.descricao}" height="100">
+					<f:facet name="toolbar">
+						<span class="ql-formats">
+							<button class="ql-bold"></button>
+							<button class="ql-italic"></button>
+							<button class="ql-underline"></button>
+							<button class="ql-strike"></button>
+						</span>
+						<span class="ql-formats"> <select class="ql-font"></select>
+							<select class="ql-size"></select>
+						</span>
+					</f:facet>
+				</p:textEditor>
+			</h:panelGrid>
+
+			<h:panelGrid cellspacing="2" columns="2" style="margin-top: 10px;">
+
+				<p:commandButton styleClass="btConfirmar" value="Salvar Resposta"
+					icon="fa fa-check-square"
+					update=":frmCadastro:tabMUE:respostasMUETable :frmCadastro:frmDialogEdicaoRespostaMUE"
+					actionListener="#{questaoCadastroBean.adicionarResposta}"
+					oncomplete="PF('confirmacaoEdicaoMUE').hide();" process="@form">
+				</p:commandButton>
+
+				<p:button value="Cancelar" styleClass="btCancelar"
+					icon="fa fa-times-circle"
+					onclick="PF('confirmacaoEdicaoMUE').hide(); return false;" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+	<p:confirmDialog header="Apagar Resposta"
+		id="confirmacaoExclusaoDialogMUE" resizable="false" draggable="false"
+		message="Tem certeza que deseja excluir a resposta '#{questaoCadastroBean.resposta.descricao}'?"
+		widgetVar="confirmacaoExclusaoMUE">
+
+		<h:form id="frmDialogExclusaoRespostaMUE">
+
+			<p:commandButton value="Sim" icon="fa fa-check-square"
+				update=":frmCadastro:tabMUE:respostasMUETable"
+				styleClass="btConfirmar"
+				oncomplete="PF('confirmacaoExclusaoMUE').hide();"
+				action="#{questaoCadastroBean.excluirResposta}" process="@this">
+
+			</p:commandButton>
+			<p:button value="Não" icon="fa fa-times-circle"
+				styleClass="btCancelar"
+				onclick="PF('confirmacaoExclusaoMUE').hide(); return false;" />
+		</h:form>
+	</p:confirmDialog>
+
+</ui:composition>

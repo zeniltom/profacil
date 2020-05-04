@@ -1,0 +1,116 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui" template="/disciplina/Layout.xhtml">
+
+	<ui:define name="titulo">#{questaoCadastroBean.editando ? 'Edição de Questão' : 'Novo Questão'}</ui:define>
+
+	<ui:define name="corpo">
+
+		<f:metadata>
+			<o:viewParam name="questao" value="#{questaoCadastroBean.questao}" />
+			<f:event listener="#{questaoCadastroBean.inicializar}"
+				type="preRenderView"></f:event>
+		</f:metadata>
+
+		<h:form id="frmCadastro">
+			<h1 class="aw-page-title">#{questaoCadastroBean.editando ?
+				'Edição de Questão' : 'Nova Questão'}</h1>
+
+			<p:autoUpdate />
+			<p:messages closable="true" sticky="true" />
+
+			<p:toolbar style="margin-top: 20px;">
+				<p:toolbarGroup>
+					<p:button value="Nova Questão" outcome="/questao/Cadastro"
+						icon="fa fa-plus" />
+
+					<p:commandButton id="botaoSalvar" value="Salvar" process="@form"
+						styleClass="btConfirmar" action="#{questaoCadastroBean.salvar}"
+						ajax="false" icon="fa fa-save" />
+
+					<p:commandButton value="Excluir" icon="fa fa-trash"
+						styleClass="btCancelar" rendered="#{questaoCadastroBean.editando}"
+						oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+						update="frmCadastro:confirmacaoExclusaoDialog" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:button value="Voltar para Disciplina" icon="fa fa-search"
+						outcome="/disciplina/Cadastro.xhtml?disciplina=#{questaoCadastroBean.questao.disciplina.id}" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid columns="4" columnClasses="rotulo"
+				style="width: 100%; margin-top: 10px;">
+
+				<p:outputLabel style="font-size: 18px; font-weight: bold;"
+					value="Disciplina" for="disciplina" />
+				<p:selectOneMenu id="disciplina"
+					value="#{questaoCadastroBean.questao.disciplina}">
+					<f:selectItem itemLabel="Selecione" />
+					<f:selectItems var="disciplina" itemLabel="#{disciplina.descricao}"
+						value="#{questaoCadastroBean.disciplinas}" />
+				</p:selectOneMenu>
+			</p:panelGrid>
+
+			<p:panelGrid columns="4" id="painel"
+				style="width: 100%; margin-top: 10px;">
+
+				<p:outputLabel style="font-size: 18px; font-weight: bold;"
+					value="Qual o tipo da pergunta?" for="tipoQuestao" />
+				<p:selectOneMenu id="tipoQuestao"
+					value="#{questaoCadastroBean.questao.tipoQuestao}">
+					<f:selectItem itemLabel="Selecione" />
+					<f:selectItems var="tipoQuestao"
+						itemLabel="#{tipoQuestao.descricao}"
+						value="#{questaoCadastroBean.tipoQuestoes}" />
+
+					<f:ajax listener="#{questaoCadastroBean.carregarTipoQuestao}"
+						render="@all" />
+
+				</p:selectOneMenu>
+
+				<p:outputLabel style="font-size: 18px; font-weight: bold;"
+					value="Qual a pontuação da pergunta?" for="pontuacao" />
+				<p:inputNumber id="pontuacao" minValue="-1000.999" maxValue="10"
+					size="10" decimalPlaces="2"
+					value="#{questaoCadastroBean.questao.pontuacao}" />
+			</p:panelGrid>
+
+			<p:fieldset style="margin-top: 10px"
+				rendered="#{questaoCadastroBean.questao.tipoQuestao == 'MUE'}">
+				<ui:include src="/questao/QuestaoMultiplaEscolha.xhtml" />
+			</p:fieldset>
+
+			<p:fieldset style="margin-top: 10px"
+				rendered="#{questaoCadastroBean.questao.tipoQuestao == 'PAB'}">
+				<ui:include src="/questao/QuestaoPerguntaAberta.xhtml" />
+			</p:fieldset>
+
+			<p:fieldset style="margin-top: 10px"
+				rendered="#{questaoCadastroBean.questao.tipoQuestao == 'VOF'}">
+				<ui:include src="/questao/QuestaoVerdadeiroOuFalso.xhtml" />
+			</p:fieldset>
+
+			<p:confirmDialog header="Exclusão de Questão"
+				id="confirmacaoExclusaoDialog"
+				message="Tem certeza que deseja excluir a questão #{questaoCadastroBean.questao.descricao}?"
+				widgetVar="confirmacaoExclusao">
+
+				<div style="float: right;">
+					<p:button value="Não" icon="fa fa-times-circle"
+						styleClass="btCancelar"
+						onclick="PF('confirmacaoExclusao').hide(); return false;" />
+
+					<p:commandButton value="Sim" icon="fa fa-check-square"
+						oncomplete="PF('confirmacaoExclusao').hide();"
+						styleClass="btConfirmar" action="#{questaoCadastroBean.excluir}"
+						process="@this" />
+				</div>
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

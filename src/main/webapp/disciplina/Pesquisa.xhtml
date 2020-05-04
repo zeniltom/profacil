@@ -1,0 +1,105 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/disciplina/Layout.xhtml">
+
+	<ui:define name="titulo">Lista de Disciplinas</ui:define>
+
+	<h:outputStylesheet library="css" name="sistema.css" />
+
+	<f:metadata>
+		<f:event listener="#{disciplinasPesquisaBean.pesquisar}"
+			type="preRenderView" />
+	</f:metadata>
+
+	<ui:define name="corpo">
+		<h:form id="frmPesquisa">
+			<h1 class="aw-page-title">Lista de Disciplinas</h1>
+
+			<p:autoUpdate />
+			<p:messages closable="true" />
+
+			<p:toolbar style="margin-top: 20px;">
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar" icon="fa fa-search"
+						action="#{disciplinasPesquisaBean.pesquisar}"
+						update="form:disciplinasTable" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup style="margin-left: 10px;">
+					<p:inputText id="descricao" size="60"
+						value="#{disciplinasPesquisaBean.descricao}"
+						placeholder="Ex.: Finanças" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:button value="Nova Disciplina" icon="fa fa-plus"
+						outcome="/disciplina/Cadastro" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:confirmDialog header="Exclusão de disciplina"
+				id="confirmacaoExclusaoDialog"
+				message="Tem certeza que deseja excluir o disciplina #{disciplinasPesquisaBean.disciplinaSelecionada}?"
+				widgetVar="confirmacaoExclusao">
+
+				<div style="float: right;">
+					<p:button value="Não" icon="fa fa-times-circle"
+						styleClass="btCancelar"
+						onclick="PF('confirmacaoExclusao').hide(); return false;" />
+
+					<p:commandButton value="Sim" icon="fa fa-check-square"
+						oncomplete="PF('confirmacaoExclusao').hide();"
+						styleClass="btConfirmar"
+						action="#{disciplinasPesquisaBean.excluir}" process="@this"
+						update=":form:disciplinasTable" />
+				</div>
+			</p:confirmDialog>
+		</h:form>
+
+		<h:form id="form">
+			<p:dataTable id="disciplinasTable"
+				value="#{disciplinasPesquisaBean.disciplinasFiltradas}"
+				var="disciplina" style="margin-top:20px;"
+				emptyMessage="Nenhum disciplina encontrado" rows="8"
+				paginator="true" paginatorAlwaysVisible="false"
+				paginatorPosition="bottom" rowKey="#{disciplina}"
+				selectionMode="single">
+
+				<p:ajax event="rowDblselect"
+					listener="#{disciplinasPesquisaBean.doubleClick}" process="@this">
+					<f:param name="disciplina" value="#{disciplina.id}" />
+				</p:ajax>
+
+				<p:column headerText="Descrição da Disciplina"
+					style="text-align: center;" sortBy="#{disciplina.descricao}">
+					<h:outputText value="#{disciplina.descricao}" />
+				</p:column>
+
+				<p:column headerText="Curso" style="text-align: center;"
+					sortBy="#{disciplina.curso.descricao}">
+					<h:outputText value="#{disciplina.curso.descricao}" />
+				</p:column>
+
+				<p:column headerText="Ações"
+					style="text-align: center; width: 200px"> 
+
+					<p:button outcome="/disciplina/Cadastro" value="Editar"
+						icon="fa fa-pencil-square-o">
+						<f:param name="disciplina" value="#{disciplina.id}" />
+					</p:button>
+
+					<p:commandButton value="Excluir" icon="fa fa-trash"
+						styleClass="btCancelar"
+						oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+						update=":frmPesquisa:confirmacaoExclusaoDialog">
+						<f:setPropertyActionListener value="#{disciplina}"
+							target="#{disciplinasPesquisaBean.disciplinaSelecionada}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

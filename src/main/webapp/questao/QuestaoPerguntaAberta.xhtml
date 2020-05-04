@@ -1,0 +1,26 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<p:outputLabel value="Descrição da pergunta: (Pergunta Aberta)"
+		style="font-size: 16px; font-weight: bold;" for="PAB" />
+	<p:textEditor widgetVar="PAB" id="PAB"
+		placeholder="Digite a descrição da sua pergunta aqui"
+		value="#{questaoCadastroBean.questao.descricao}" height="200"
+		style="margin-bottom: 10px; margin-top: 20px">
+		<f:facet name="toolbar">
+			<span class="ql-formats">
+				<button class="ql-bold"></button>
+				<button class="ql-italic"></button>
+				<button class="ql-underline"></button>
+				<button class="ql-strike"></button>
+			</span>
+			<span class="ql-formats"> <select class="ql-font"></select> <select
+				class="ql-size"></select>
+			</span>
+		</f:facet>
+	</p:textEditor>
+
+</ui:composition>

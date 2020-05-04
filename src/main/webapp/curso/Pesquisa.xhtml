@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core" template="/curso/Layout.xhtml">
+
+	<ui:define name="titulo">Lista de Cursos</ui:define>
+
+	<h:outputStylesheet library="css" name="sistema.css" />
+
+	<f:metadata>
+		<f:event listener="#{cursosPesquisaBean.pesquisar}"
+			type="preRenderView" />
+	</f:metadata>
+
+	<ui:define name="corpo">
+		<h:form id="frmPesquisa">
+			<h1 class="aw-page-title">Lista de Cursos</h1>
+
+			<p:autoUpdate />
+			<p:messages closable="true" />
+
+			<p:toolbar style="margin-top: 20px;">
+				<p:toolbarGroup>
+					<p:commandButton value="Pesquisar" icon="fa fa-search"
+						action="#{cursosPesquisaBean.pesquisar}" update="form:cursosTable" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup style="margin-left: 10px;">
+					<p:inputText id="descricao" size="60"
+						placeholder="Ex.: Adminstração"
+						value="#{cursosPesquisaBean.descricao}" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:button value="Novo Curso" icon="fa fa-plus"
+						outcome="/curso/Cadastro" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:confirmDialog header="Exclusão de Curso"
+				id="confirmacaoExclusaoDialog"
+				message="Tem certeza que deseja excluir o curso de #{cursosPesquisaBean.cursoSelecionado}?"
+				widgetVar="confirmacaoExclusao">
+
+				<div style="float: right;">
+					<p:button value="Não" icon="fa fa-times-circle"
+						styleClass="btCancelar"
+						onclick="PF('confirmacaoExclusao').hide(); return false;" />
+
+					<p:commandButton value="Sim" icon="fa fa-check-square"
+						oncomplete="PF('confirmacaoExclusao').hide();"
+						styleClass="btConfirmar" action="#{cursosPesquisaBean.excluir}"
+						process="@this" update=":form:cursosTable" />
+				</div>
+			</p:confirmDialog>
+		</h:form>
+		
+		<h:form id="form">
+			<p:dataTable id="cursosTable"
+				value="#{cursosPesquisaBean.cursosFiltrados}" var="curso"
+				style="margin-top:20px;" emptyMessage="Nenhum curso encontrado"
+				rows="8" paginator="true" paginatorAlwaysVisible="false"
+				paginatorPosition="bottom" rowKey="#{curso}" selectionMode="single">
+
+				<p:ajax event="rowDblselect"
+					listener="#{cursosPesquisaBean.doubleClick}" process="@this">
+					<f:param name="Curso" value="#{curso.id}" />
+				</p:ajax>
+
+				<p:column headerText="Descrição do Curso"
+					sortBy="#{curso.descricao}">
+					<h:outputText value="#{curso.descricao}" />
+				</p:column>
+
+				<p:column style="text-align: center; width: 200px"
+					headerText="Ações">
+
+					<p:button outcome="/curso/Cadastro" value="Editar"
+						icon="fa fa-pencil-square-o">
+						<f:param name="curso" value="#{curso.id}" />
+					</p:button>
+
+					<p:commandButton value="Excluir" icon="fa fa-trash"
+						styleClass="btCancelar"
+						oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+						update=":frmPesquisa:confirmacaoExclusaoDialog">
+						<f:setPropertyActionListener value="#{curso}"
+							target="#{cursosPesquisaBean.cursoSelecionado}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

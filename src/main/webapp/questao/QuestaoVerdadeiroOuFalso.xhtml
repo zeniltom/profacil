@@ -1,0 +1,137 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<p:outputLabel value="Descrição da pergunta: (Verdadeiro ou Falso)"
+		style="font-size: 16px; font-weight: bold;" for="VOF" />
+	<p:textEditor widgetVar="VOF" id="VOF"
+		rendered="#{questoeCadastroBean.questao.tipoQuestao == 'VOF'}"
+		placeholder="Digite a descrição da sua pergunta aqui"
+		value="#{questoeCadastroBean.questao.descricao}" height="100"
+		style="margin-bottom: 10px; margin-top: 20px">
+		<f:facet name="toolbar">
+			<span class="ql-formats">
+				<button class="ql-bold"></button>
+				<button class="ql-italic"></button>
+				<button class="ql-underline"></button>
+				<button class="ql-strike"></button>
+			</span>
+			<span class="ql-formats"> <select class="ql-font"></select> <select
+				class="ql-size"></select>
+			</span>
+		</f:facet>
+	</p:textEditor>
+
+	<p:tabView id="tabVOF">
+		<p:tab title="Respostas">
+			<p:toolbar>
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Adicionar Resposta" icon="fa fa-plus"
+						oncomplete="PF('confirmacaoEdicaoVOF').show()" process="@this"
+						actionListener="#{questoeCadastroBean.novaResposta}"
+						update="frmCadastro:confirmacaoEdicaoVOFDialog">
+					</p:commandButton>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:dataTable id="respostasVOFTable"
+				value="#{questoeCadastroBean.respostas}" var="resposta"
+				emptyMessage="Não há respostas" rows="8" paginator="true"
+				rowKey="#{resposta}" paginatorAlwaysVisible="false"
+				paginatorPosition="bottom">
+
+				<p:column selectionMode="single"
+					style="width: 16px; text-align: center" />
+
+				<p:column headerText="Descrição da Resposta" id="descricao">
+					<p:outputLabel value="#{resposta.descricao}" style="width:100%" />
+				</p:column>
+
+				<p:column headerText="Ações"
+					style="text-align: center; width: 200px">
+
+					<p:commandButton value="Editar" icon="fa fa-pencil-square-o"
+						update=":frmCadastro:confirmacaoEdicaoVOFDialog :frmCadastro:frmDialogEdicaoRespostaVOF:painel"
+						oncomplete="PF('confirmacaoEdicaoVOF').show()" process="@this">
+						<f:setPropertyActionListener value="#{resposta}"
+							target="#{questoeCadastroBean.resposta}" />
+					</p:commandButton>
+
+					<p:commandButton value="Excluir" icon="fa fa-trash"
+						styleClass="btCancelar"
+						update=":frmCadastro:frmDialogEdicaoRespostaVOF :frmCadastro:confirmacaoExclusaoVOFDialog"
+						oncomplete="PF('confirmacaoExclusaoVOF').show()" process="@this">
+						<f:setPropertyActionListener value="#{resposta}"
+							target="#{questoeCadastroBean.resposta}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:tab>
+	</p:tabView>
+
+	<p:dialog
+		header="#{questoeCadastroBean.editandoResposta? 'Edição de Resposta (Verdadeiro ou Falso)' : 'Nova Resposta (Verdadeiro ou Falso)'}"
+		id="confirmacaoEdicaoVOFDialog" widgetVar="confirmacaoEdicaoVOF"
+		modal="true" resizable="false" draggable="false"
+		onShow="PF('confirmacaoEdicaoVOF').initPosition()">
+
+		<h:form id="frmDialogEdicaoRespostaVOF">
+			<h:panelGrid id="painel" columns="1">
+
+				<p:outputLabel value="Descrição da Resposta" for="descricao"
+					style="font-size: 16px; font-weight: bold;" />
+				<p:textEditor id="descricao" style="width: 750px"
+					value="#{questoeCadastroBean.resposta.descricao}" height="100">
+					<f:facet name="toolbar">
+						<span class="ql-formats">
+							<button class="ql-bold"></button>
+							<button class="ql-italic"></button>
+							<button class="ql-underline"></button>
+							<button class="ql-strike"></button>
+						</span>
+						<span class="ql-formats"> <select class="ql-font"></select>
+							<select class="ql-size"></select>
+						</span>
+					</f:facet>
+				</p:textEditor>
+			</h:panelGrid>
+
+			<h:panelGrid cellspacing="2" columns="2" style="margin-top: 10px;">
+
+				<p:commandButton styleClass="btConfirmar" value="Salvar Resposta"
+					icon="fa fa-check-square"
+					update=":frmCadastro:tabVOF:respostasVOFTable :frmCadastro:frmDialogEdicaoRespostaVOF"
+					actionListener="#{questoeCadastroBean.adicionarResposta}"
+					oncomplete="PF('confirmacaoEdicaoVOF').hide();" process="@form">
+				</p:commandButton>
+
+				<p:button value="Cancelar" styleClass="btCancelar"
+					icon="fa fa-times-circle"
+					onclick="PF('confirmacaoEdicaoVOF').hide(); return false;" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+	<p:confirmDialog header="Apagar Resposta"
+		id="confirmacaoExclusaoVOFDialog" resizable="false" draggable="false"
+		message="Tem certeza que deseja excluir a resposta '#{questoeCadastroBean.resposta.descricao}'?"
+		widgetVar="confirmacaoExclusaoVOF">
+
+		<h:form id="frmDialogExclusaoRespostaVOF">
+
+			<p:commandButton value="Sim" icon="fa fa-check-square"
+				update=":frmCadastro:tabVOF:respostasVOFTable"
+				styleClass="btConfirmar"
+				oncomplete="PF('confirmacaoExclusaoVOF').hide();"
+				action="#{questoeCadastroBean.excluirResposta}" process="@this">
+
+				<p:button value="Não" icon="fa fa-times-circle"
+					styleClass="btCancelar"
+					onclick="PF('confirmacaoExclusaoVOF').hide(); return false;" />
+			</p:commandButton>
+		</h:form>
+	</p:confirmDialog>
+
+</ui:composition>

@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core" template="/prova/Layout.xhtml">
+
+	<f:metadata>
+		<f:event listener="#{menuManagedBean.inicializar}"
+			type="preRenderView" />
+	</f:metadata>
+
+	<ui:define name="titulo">Teste de Menu</ui:define>
+
+	<ui:define name="corpo">
+
+		<h:form>
+
+			<p:autoUpdate />
+			<p:messages closable="true" />
+
+			<h1 class="aw-page-title">Menu do Bean</h1>
+
+			<p:menubar styleClass="menu-sistema"
+				style="background-color: #3B5998 !important; border-style: outset;"
+				model="#{menuManagedBean.menubar}" />
+
+			<br />
+
+			<h1 class="aw-page-title">Menu do Bean com ID</h1>
+
+			<p:menubar styleClass="menu-sistema"
+				binding="#{menuManagedBean.menuBarTela}"
+				style="background-color: #3B5998 !important; border-style: outset;">
+
+				<p:submenu rendered="false" id="PRO_CADASTROS" label="Cadastros"
+					icon="fa fa-plus-circle">
+
+					<p:menuitem rendered="false" id="PRO_MEUCADASTROTESTE"
+						value="Dados Pessoais" icon="fa fa-user" />
+
+				</p:submenu>
+
+				<p:menuitem rendered="false" id="PRO_MEUPERFIL" value="Meu Perfil"
+					icon="fa fa-user" />
+
+				<p:menuitem rendered="false" id="PRO_CURSOS" value="Cursos"
+					icon="fa fa-mortar-board" />
+
+				<p:menuitem rendered="false" id="PRO_DISCIPLINAS"
+					value="Disciplinas" icon="fa fa-book" />
+
+				<p:menuitem rendered="false" id="PRO_MINHASPROVAS"
+					value="Minhas Provas" icon="fa fa-file-text" />
+
+				<p:menuitem rendered="false" id="PRO_SOBRE" value="Sobre"
+					icon="fa fa-info-circle" />
+
+			</p:menubar>
+
+			<p style="margin: 400px" />
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,280 @@
+@charset "utf-8";
+
+body {
+	font-size: 13px;
+	font-family: Helvetica Neue, Helvetica, sans-serif;
+	margin: 0px;
+	font-weight: normal;
+}
+/*
+header {
+	
+	padding: 5px 0px;
+	margin-bottom: 20px;
+	height: 30px;
+	background-color: #3B5998;
+	color: #fff;
+	box-shadow: 0px 2px 2px #ccc;
+}
+
+*/
+
+.ui-widget .ui-outputlabel {
+	display: block;
+	/*font-weight: bold !important;*/
+}
+
+.new-col {
+    float: left;
+    padding-right: 2px;
+    padding-top: 10px;
+    box-sizing: border-box;
+}
+
+.new-lin {
+    width: 99%;
+    display: table;
+    padding-bottom: 3px;
+    padding-left: 8px;
+    position: relative;
+}
+
+header>div {
+	margin-left: 8px
+}
+
+#conteudo {
+	padding: 0px 8px
+}
+
+footer {
+	padding: 0px 8px;
+	margin-bottom: 10px
+}
+/*
+h1 {
+	
+	font-size: 24px;
+	font-weight: 500;
+	padding: 0px;
+	margin: 0px;
+}
+*/
+.estoqueVazio {
+	background: #ffb0b0;
+	font-weight: bold;
+}
+
+.statusCancelado {
+	background: #ffb0b0;
+	font-weight: bold;
+}
+
+.statusEmitido {
+	background: #ccffcc;
+	font-weight: bold;
+}
+
+/* Status das linhas da dataTable*/
+.ui-datatable tr.ui-datatable-even:hover, .ui-datatable tr.ui-datatable-odd:hover	{
+	/*background: #8080ff;*/
+ 	color: white;
+	background: #3399ff; 
+}
+
+/* Status dos botões por padrão*/
+.ui-button.ui-state-default {
+	
+}
+
+/* Muda a cor do ícone do checkbox da dataTable*/
+.ui-state-highlight .ui-icon {
+    background-image: url('/Profacil/javax.faces.resource/images/ui-icons_333333_256x240.png.xhtml?ln=primefaces-bootstrap') !important;
+}
+
+.ui-button.ui-state-hover {
+	color: white;
+	background: transparent;
+	background-color: #476bb8!important;
+}
+
+/* Status dos botões quando clicado*/
+.ui-button.ui-state-active {
+	color: white;
+	font-weight: bold;
+	background-color: #0081c2 !important;
+}
+
+.btConfirmar:hover {
+	background-color: green !important;
+	color: white;
+	transition: all 0.05s linear;
+}
+
+.btCancelar:hover {
+	background-color: #DB0007 !important;
+	color: white;
+	transition: all 0.05s linear;
+}
+
+.btSair {
+	background: transparent !important;
+}
+
+#sair {
+	color: white;
+	background-image: linear-gradient(#3B5998, #0497ce);
+	border: 0.1px solid #e4e4e4;
+	border-radius: 5px;
+	float: right;
+	margin: 10px;
+	padding: 5px;
+	font-weight: bold;
+}
+
+#sair:hover{
+	background: transparent;
+	background-image: radial-gradient(red, #ff7174);
+ 	color: white;
+	transition: all 0.05s linear;
+}
+
+.btSair:hover{
+	background: transparent;
+	background-color: #ff7174!important;
+	color: white;
+	transition: all 0.05s linear;
+}
+
+.login-screen {
+	width: 100%;
+	background: url(#{ resource [ 'images:man_in_office.jpg' ]}) center;
+	background-repeat: no-repeat;
+}
+
+#login-dialog {
+	width: 280px;
+	margin: auto;
+	margin-top: 150px;
+}
+
+.grid-login {
+	background-color: #f2f2f2;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	margin-top: 8px;
+	padding: 10px;
+	text-align: center;
+}
+
+.login-logo {
+	display: block;
+	width: 75px;
+	height: 75px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.rotulo {
+	width: 150px
+}
+
+.ui-fieldset .ui-fieldset-legend {
+	font-size: 16px;
+	color: #373737;
+	font-weight: bold;
+	border: none !important;
+}
+
+.sem-borda tr, .sem-borda td {  
+   border: none !important;  
+}
+
+.ui-panelgrid td {
+	height: 34px
+}
+
+.ajax-status {
+	position: fixed;
+	top: 55px;
+	right: 10px;
+	width: 35px;
+	height: 35px
+}
+
+.ui-selectmanycheckbox td {
+	border-width: 0px !important;
+	padding: 0px !important;
+}
+
+.ui-selectmanycheckbox td label {
+	padding-right: 10px;
+}
+
+.produto-tabela {
+	width: 100% !important;
+}
+
+.produto-tabela input {
+	width: 99%;
+}
+
+/* Customiza TabView - início */
+.ui-tabs .ui-tabs-panel {
+	padding: 0.5em 0.2em !important;
+}
+
+.ui-tabs {
+	padding: 0px !important;
+}
+
+.ui-tabs .ui-tabs-nav {
+	margin: -1px !important;
+}
+
+.ui-tabs.ui-tabs-top>.ui-tabs-nav {
+	padding: 0px !important;
+}
+
+/* Fonte das abas*/
+.ui-tabs .ui-tabs-nav.ui-widget-header li a{
+	font-weight: bold;
+}
+ 
+/* Customiza TabView - fim */
+
+/* Menu sistema inicio */
+.menu-sistema {
+	border: 0px !important;
+	padding: 0px !important;
+	background: none !important;
+}
+
+.ui-menu.ui-widget .ui-menuitem-link .ui-menuitem-icon{
+	color: white;
+}
+
+.ui-menu.ui-menubar{
+	border-radius: 0 !important;
+}
+
+.menu-sistema .ui-menu-parent>a .ui-menuitem-text, .menu-sistema>.ui-menu-list>.ui-menuitem>a>.ui-menuitem-text{
+	color: white !important;
+	font-weight: bold;
+	padding-left: 5px;
+	padding-right: 10px;
+}
+ 
+ /* Status quando passa o mouse nos menuItens*/
+.ui-menu.ui-widget li>.ui-menuitem-link.ui-state-hover {
+ 	border-radius: 0px;
+}
+
+.menu-sistema .ui-icon-triangle-1-s {
+	background: url(#{ resource [ 'images:seta-para-baixo.png' ]}) no-repeat! important;
+}
+
+/* Menu sistema fim */
+.ui-state-disabled {
+	opacity: .70 !important;
+}
