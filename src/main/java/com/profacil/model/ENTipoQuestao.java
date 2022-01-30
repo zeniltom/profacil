@@ -10,6 +10,7 @@ public enum ENTipoQuestao {
 		return descricao;
 	}
 
+	@Override
 	public String toString() {
 		return descricao;
 	}

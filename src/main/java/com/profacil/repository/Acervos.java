@@ -32,12 +32,12 @@ public class Acervos implements Serializable {
 	}
 
 	public void delete(Acervo acervo) {
-		String AcervoID = "0";
+		String acervoID = "0";
 
 		if (acervo != null && acervo.getId() != null)
-			AcervoID = acervo.getId().toString();
+			acervoID = acervo.getId().toString();
 
-		this.entityManager.createNativeQuery("CALL excluirAcervo(" + AcervoID + ")").executeUpdate();
+		this.entityManager.createNativeQuery("CALL excluirAcervo(" + acervoID + ")").executeUpdate();
 	}
 
 	@SuppressWarnings({ "deprecation" })

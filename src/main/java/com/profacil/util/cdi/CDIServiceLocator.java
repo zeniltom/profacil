@@ -22,7 +22,7 @@ public class CDIServiceLocator {
 	@SuppressWarnings("unchecked")
 	public static <T> T getBean(Class<T> clazz) {
 		BeanManager bm = getBeanManager();
-		Set<Bean<?>> beans = (Set<Bean<?>>) bm.getBeans(clazz);
+		Set<Bean<?>> beans = bm.getBeans(clazz);
 
 		if (beans == null || beans.isEmpty()) {
 			return null;
@@ -31,9 +31,7 @@ public class CDIServiceLocator {
 		Bean<T> bean = (Bean<T>) beans.iterator().next();
 
 		CreationalContext<T> ctx = bm.createCreationalContext(bean);
-		T o = (T) bm.getReference(bean, clazz, ctx);
-
-		return o;
+		return (T) bm.getReference(bean, clazz, ctx);
 	}
 
 }

@@ -10,6 +10,7 @@ public enum ENTurnoEscolar {
 		return descricao;
 	}
 
+	@Override
 	public String toString() {
 		return descricao;
 	}

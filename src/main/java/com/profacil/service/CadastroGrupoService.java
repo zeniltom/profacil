@@ -17,8 +17,8 @@ public class CadastroGrupoService implements Serializable {
 	private Grupos grupos;
 
 	@Transactional
-	public void createNew(Grupo Grupo) {
-		grupos.persist(Grupo);
+	public void createNew(Grupo grupo) {
+		grupos.persist(grupo);
 	}
 
 	@Transactional

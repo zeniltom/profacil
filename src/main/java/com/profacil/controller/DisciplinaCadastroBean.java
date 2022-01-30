@@ -87,9 +87,9 @@ public class DisciplinaCadastroBean implements Serializable {
 
 	public void doubleClickQuestao(SelectEvent event) throws IOException {
 		if (event != null) {
-			Questao questao = (Questao) event.getObject();
+			Questao quest = (Questao) event.getObject();
 
-			Util.redirecionarObjeto("/questao/Cadastro.xhtml?questao=" + questao.getId().toString());
+			Util.redirecionarObjeto("/questao/Cadastro.xhtml?questao=" + quest.getId().toString());
 		} else
 			throw new NegocioException("Não foi possível verificar esta questao.");
 	}
@@ -136,7 +136,7 @@ public class DisciplinaCadastroBean implements Serializable {
 		try {
 			disciplinaService.delete(this.disciplina);
 			FacesUtil.addInfoMessage("Disciplina " + this.disciplina.getDescricao() + " excluída com sucesso!");
- 			listar();
+			listar();
 
 		} catch (ConstraintViolationException e) {
 			FacesUtil.addErrorMessage("Não foi possível excluir a disciplina de " + disciplina.getDescricao()
@@ -145,7 +145,7 @@ public class DisciplinaCadastroBean implements Serializable {
 	}
 
 	public void carregarQuestoes() {
-		questoes = this.disciplina.getId() != null ? questoes = questaoService.findByIdDisciplina(this.disciplina)
+		questoes = this.disciplina.getId() != null ? questaoService.findByIdDisciplina(this.disciplina)
 				: new ArrayList<>();
 	}
 
@@ -199,7 +199,6 @@ public class DisciplinaCadastroBean implements Serializable {
 
 	public void carregarTipoQuestao() {
 		FacesUtil.addInfoMessage("Tipo Questão " + this.questao.getTipoQuestao() + " selecionada!");
-		System.out.println("Tipo Questão " + this.questao.getTipoQuestao() + " selecionada!");
 	}
 
 	public ENTipoQuestao[] getTipoQuestoes() {

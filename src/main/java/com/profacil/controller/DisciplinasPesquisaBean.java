@@ -28,8 +28,6 @@ public class DisciplinasPesquisaBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private ProfessorSistema professorSistema;
-
 	@Inject
 	private AcervoService acervoService;
 
@@ -51,7 +49,8 @@ public class DisciplinasPesquisaBean implements Serializable {
 
 	@PostConstruct
 	public void inicializar() {
-		professorSistema = (ProfessorSistema) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		ProfessorSistema professorSistema = (ProfessorSistema) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
 		acervo = acervoService.findByProfessor(professorSistema.getProfessor());
 	}
 
@@ -60,7 +59,7 @@ public class DisciplinasPesquisaBean implements Serializable {
 	}
 
 	public void excluir() {
- 		try {
+		try {
 			disciplinaService.delete(disciplinaSelecionada);
 			FacesUtil.addInfoMessage("Disciplina " + disciplinaSelecionada.getDescricao() + " excluída com sucesso!");
 
@@ -72,9 +71,9 @@ public class DisciplinasPesquisaBean implements Serializable {
 
 	public void doubleClick(SelectEvent event) throws IOException {
 		if (event != null) {
-			Disciplina Disciplina = (Disciplina) event.getObject();
+			Disciplina disciplina = (Disciplina) event.getObject();
 
-			Util.redirecionarObjeto("/disciplina/Cadastro.xhtml?disciplina=" + Disciplina.getId().toString());
+			Util.redirecionarObjeto("/disciplina/Cadastro.xhtml?disciplina=" + disciplina.getId().toString());
 		} else
 			throw new NegocioException("Não foi possível verificar esta disciplina.");
 	}
